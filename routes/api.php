@@ -31,6 +31,16 @@ Route::post('/email-file', function (Request $request) {
   return response()->json($file);
 });
 
+Route::post('/upload-file-data', function (Request $request) {
+  $uploadedFile = $request->video;
+  $file = File::Create([
+    'name' => $uploadedFile->getClientOriginalName(),
+    'mime_type' => $uploadedFile->getClientMimeType(),
+    'size' => $uploadedFile->getSize(),
+  ]);
+  return response()->json($file);
+});
+
 Route::get('/get-stats', function (Request $request) {
   $size = File::all()->sum('size');
   return response()->json($size);
