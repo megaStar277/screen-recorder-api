@@ -30,3 +30,8 @@ Route::post('/email-file', function (Request $request) {
   $file->notify(new SendFile($uploadedFile));
   return response()->json($file);
 });
+
+Route::get('/get-stats', function (Request $request) {
+  $size = File::all()->sum('size');
+  return response()->json($size);
+});
