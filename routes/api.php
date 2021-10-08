@@ -21,12 +21,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/email-file', function (Request $request) {
   $uploadedFile = $request->video;
-  $file = File::Create([
+  $file = File::firstOrCreate([
     'name' => $uploadedFile->getClientOriginalName(),
     'mime_type' => $uploadedFile->getClientMimeType(),
-    'size' => $uploadedFile->getSize(),
-    'email' => $request->email
+    'size' => $uploadedFile->getSize()
   ]);
+  $file->email = $request->email;
+  $file->save();
   $file->notify(new SendFile($uploadedFile));
   return response()->json($file);
 });
