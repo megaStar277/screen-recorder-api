@@ -43,7 +43,9 @@ class SendFile extends Notification
     {
         return (new MailMessage)
                     ->line('Your Screen Recording')
-                    ->line('Thank you for using our application!')
+                    ->line('Thank you for using my application!')
+                    ->line('If you enjoyed this application consider subscribing to my Youtube channel!')
+                    ->action('Go Now!', 'https://youtube.com/c/jyroneparker')
                     ->attach($this->file, ['as' => 'jcompsolu-screen-record.webm', 'mime' => 'video/webm']);
     }
 
