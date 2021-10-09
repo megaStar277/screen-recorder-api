@@ -48,9 +48,6 @@ Route::get('/get-stats', function (Request $request) {
   return response()->json($size);
 });
 
-Route::get('/login/youtube', function (Request $request) {
-  return Socialite::driver('youtube')->stateless()->redirect()->getTargetUrl();
-});
 
 Route::get('/callback/youtube', function (Request $request) {
   $user = Socialite::driver('youtube')->stateless()->user();

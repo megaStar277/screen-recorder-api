@@ -16,3 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/login/youtube', function (Request $request) {
+  return Socialite::driver('youtube')->stateless()->redirect();
+});
