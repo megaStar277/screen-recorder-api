@@ -53,5 +53,7 @@ Route::get('/login/youtube', function (Request $request) {
 });
 
 Route::get('/callback/youtube', function (Request $request) {
-  return Socialite::driver('youtube')->stateless()->user();
+  $user = Socialite::driver('youtube')->stateless()->user();
+  dd($user);
+  return $user;
 });
