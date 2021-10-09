@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\File;
 use App\Notifications\SendFile;
+use Laravel\Socialite\Facades\Socialite;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -45,4 +46,12 @@ Route::post('/upload-file-data', function (Request $request) {
 Route::get('/get-stats', function (Request $request) {
   $size = File::all()->sum('size');
   return response()->json($size);
+});
+
+Route::get('/login/youtube', function (Request $request) {
+  return Socialite::driver('youtube')->stateless()->redirect()->getTargetUrl();
+});
+
+Route::get('/callback/youtube', function (Request $request) {
+  return Socialite::driver('youtube')->stateless()->user();
 });

@@ -13,7 +13,11 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
-
+    'youtube' => [
+      'client_id' => env('YOUTUBE_CLIENT_ID'),
+      'client_secret' => env('YOUTUBE_CLIENT_SECRET'),
+      'redirect' => env('YOUTUBE_REDIRECT_URI') 
+    ],
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),
