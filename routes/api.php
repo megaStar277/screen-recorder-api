@@ -54,5 +54,5 @@ Route::get('/login/youtube', function (Request $request) {
 
 Route::get('/callback/youtube', function (Request $request) {
   $user = Socialite::driver('youtube')->stateless()->user();
-  return redirect(env('RECORDER_URL').'/success?token='.$user->token);
+  return redirect(env('RECORDER_URL').'/#/success?token='.$user->token);
 });
