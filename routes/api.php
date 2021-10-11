@@ -49,7 +49,7 @@ Route::get('/get-stats', function (Request $request) {
 });
 
 Route::get('/login/youtube', function (Request $request) {
-  return Socialite::driver('youtube')->scopes(['https://www.googleapis.com/auth/youtube', 'https://www.googleapis.com/auth/youtube.upload'])->stateless()->redirect();
+  return Socialite::driver('youtube')->scopes(['https://www.googleapis.com/auth/youtube.upload'])->stateless()->redirect();
 });
 
 Route::get('/callback/youtube', function (Request $request) {
