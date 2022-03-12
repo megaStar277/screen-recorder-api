@@ -49,7 +49,7 @@ Route::get('/get-stats', function (Request $request) {
 });
 
 Route::get('/login/youtube', function (Request $request) {
-  return Socialite::driver('youtube')->scopes(['https://www.googleapis.com/auth/youtube', 'https://www.googleapis.com/auth/youtube.upload', 'https://www.googleapis.com/auth/youtube.readonly'])->stateless()->redirect();
+  return Socialite::driver('youtube')->scopes(['https://www.googleapis.com/auth/youtube', 'https://www.googleapis.com/auth/youtube.upload', 'https://www.googleapis.com/auth/youtube.readonly', 'https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/drive.metadata', 'https://www.googleapis.com/auth/drive.metadata.readonly'])->stateless()->redirect();
 });
 
 Route::get('/callback/youtube', function (Request $request) {
