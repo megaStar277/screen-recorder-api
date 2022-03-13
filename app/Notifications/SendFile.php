@@ -46,7 +46,7 @@ class SendFile extends Notification
                     ->line('Thank you for using my application!')
                     ->line('If you enjoyed this application consider subscribing to my Youtube channel!')
                     ->action('Go Now!', 'https://youtube.com/c/jyroneparker')
-                    ->attach($this->file, ['as' => 'jcompsolu-screen-record.webm', 'mime' => 'video/webm']);
+                    ->attach($this->file, ['as' => 'jcompsolu-screen-record.zip', 'mime' => 'application/zip']);
     }
 
     /**
