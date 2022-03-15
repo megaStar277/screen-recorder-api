@@ -47,7 +47,7 @@ Route::post('/upload-file-data', function (Request $request) {
   return response()->json($file);
 });
 
-Route::get('/video/{id}', function (File $file) {
+Route::get('/video/{file}', function (File $file) {
   return response()->json($file);
 });
 
