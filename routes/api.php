@@ -43,7 +43,7 @@ Route::post('/upload-file-data', function (Request $request) {
     'mime_type' => $uploadedFile->getClientMimeType(),
     'size' => $uploadedFile->getSize(),
     'path' => Storage::temporaryUrl(
-      $path, now()->addDays(30)
+      $path, now()->addDays(7)
     )
   ]);
   return response()->json($file);
