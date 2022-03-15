@@ -6,6 +6,7 @@ use App\Models\File;
 use App\Notifications\SendFile;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -36,12 +37,13 @@ Route::post('/email-file', function (Request $request) {
 
 Route::post('/upload-file-data', function (Request $request) {
   $uploadedFile = $request->video;
-  Storage::put($uploadedFile->getClientOriginalName(), $uploadedFile);
+  $name = Str::random(40).'.webm';
+  Storage::put($name, $uploadedFile);
   $file = File::Create([
     'name' => $uploadedFile->getClientOriginalName(),
     'mime_type' => $uploadedFile->getClientMimeType(),
     'size' => $uploadedFile->getSize(),
-    'path' => Storage::url($uploadedFile->getClientOriginalName())
+    'path' => Storage::url($name)
   ]);
   return response()->json($file);
 });
