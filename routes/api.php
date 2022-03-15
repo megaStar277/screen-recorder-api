@@ -37,12 +37,12 @@ Route::post('/email-file', function (Request $request) {
 
 Route::post('/upload-file-data', function (Request $request) {
   $uploadedFile = $request->video;
-  Storage::putFile('videos', $uploadedFile);
+  $path = Storage::putFile('videos', $uploadedFile);
   $file = File::Create([
     'name' => $uploadedFile->getClientOriginalName(),
     'mime_type' => $uploadedFile->getClientMimeType(),
     'size' => $uploadedFile->getSize(),
-    'path' => Storage::url($name)
+    'path' => $path
   ]);
   return response()->json($file);
 });
