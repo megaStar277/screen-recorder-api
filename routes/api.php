@@ -50,6 +50,10 @@ Route::get('/video/{id}', function (File $file) {
   return response()->json($file);
 });
 
+Route::get('/video', function (Request $request) {
+  return response()->json(File::all());
+});
+
 Route::post('/video', function (Video $video) {
   return response()->json($video);
 });
