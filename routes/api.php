@@ -42,9 +42,7 @@ Route::post('/upload-file-data', function (Request $request) {
     'name' => $uploadedFile->getClientOriginalName(),
     'mime_type' => $uploadedFile->getClientMimeType(),
     'size' => $uploadedFile->getSize(),
-    'path' => Storage::temporaryUrl(
-      $path, now()->addDays(7)
-    )
+    'path' => Storage::url($path)
   ]);
   return response()->json($file);
 });
