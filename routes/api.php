@@ -37,7 +37,7 @@ Route::post('/email-file', function (Request $request) {
 
 Route::post('/upload-file-data', function (Request $request) {
   $uploadedFile = $request->video;
-  $name = Str::random(40).'.webm';
+  $name = Str::random(40).$uploadedFile->getClientMimeType();
   Storage::put($name, $uploadedFile);
   $file = File::Create([
     'name' => $uploadedFile->getClientOriginalName(),
