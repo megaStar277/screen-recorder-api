@@ -13,6 +13,7 @@
         "laravel/sanctum": "^2.11",
         "laravel/socialite": "^5.2",
         "laravel/tinker": "^2.5",
+        "league/flysystem-aws-s3-v3": "^1.0",
         "socialiteproviders/youtube": "^4.1"
     },
     "require-dev": {

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Models\File;
 use App\Notifications\SendFile;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Storage;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -35,12 +36,22 @@ Route::post('/email-file', function (Request $request) {
 
 Route::post('/upload-file-data', function (Request $request) {
   $uploadedFile = $request->video;
+  Storage::put($uploadedFile->getClientOriginalName(), $uploadedFile);
   $file = File::Create([
     'name' => $uploadedFile->getClientOriginalName(),
     'mime_type' => $uploadedFile->getClientMimeType(),
     'size' => $uploadedFile->getSize(),
+    'path' => Storage::url($uploadedFile->getClientOriginalName())
   ]);
   return response()->json($file);
+});
+
+Route::get('/video/{id}', function (File $file) {
+  return response()->json($file);
+});
+
+Route::post('/video', function (Video $video) {
+  return response()->json($video);
 });
 
 Route::get('/get-stats', function (Request $request) {
