@@ -44,7 +44,40 @@ Route::post('/upload-file-data', function (Request $request) {
     'size' => $uploadedFile->getSize(),
     'path' => Storage::url($path)
   ]);
-  return response()->json($file);
+  $config = [
+    'version'     => 'latest',
+    'region'      => env('AWS_DEFAULT_REGION'), // the region of your cloud server
+    'credentials' => [
+        'key'    => env('AWS_ACCESS_KEY_ID'), // the key to authorize you on the server
+        'secret' => env('AWS_SECRET_ACCESS_KEY'), // the secret to access to the cloud
+    ]
+];
+$s3 = new Streaming\Clouds\S3($config);
+
+$from_s3 = [
+    'cloud' => $s3,
+    'options' => [
+        'Bucket' => $bucket, // name of your bucket
+        'Key' => $file->path // your file name on the cloud
+    ]
+];
+
+$to_s3 = [
+    'cloud' => $s3,
+    'options' => [
+        'dest' => `s3://{$bucket}/dash/`, // name of your bucket and path to content folder
+        'filename' => `{$file->size}.m3u8` // name of your file on the cloud
+    ]
+];
+
+$ffmpeg = Streaming\FFMpeg::create();
+$video = $ffmpeg->openFromCloud($from_s3);
+$video->dash()
+    ->setAdaption('id=0,streams=v id=1,streams=a') // Set the adaption.
+    ->vp9() // Format of the video. Alternatives: x264() and vp9()
+    ->autoGenerateRepresentations() // Auto generate representations
+    ->save(null, $to_s3); // It can be passed a path to the method or it can be null
+    return response()->json($video->metadata());
 });
 
 Route::get('/video/{file}', function (File $file) {
