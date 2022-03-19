@@ -48,55 +48,56 @@ Route::post('/upload-file-data', function (Request $request) {
     'size' => $uploadedFile->getSize(),
     'path' => Storage::url($path)
   ]);
-  $config = [
-    'version'     => 'latest',
-    'region'      => env('AWS_DEFAULT_REGION'), // the region of your cloud server
-    'credentials' => [
-        'key'    => env('AWS_ACCESS_KEY_ID'), // the key to authorize you on the server
-        'secret' => env('AWS_SECRET_ACCESS_KEY'), // the secret to access to the cloud
-    ]
-];
-$s3 = new Streaming\Clouds\S3($config);
-
-$from_s3 = [
-    'cloud' => $s3,
-    'options' => [
-        'Bucket' => $bucket, // name of your bucket
-        'Key' => $path // your file name on the cloud
-    ]
-];
-
-$to_s3 = [
-    'cloud' => $s3,
-    'options' => [
-        'dest' => `s3://{$bucket}/dash/`, // name of your bucket and path to content folder
-        'filename' => `{$file->size}.m3u8` // name of your file on the cloud
-    ]
-];
-$r_144p  = (new Representation)->setKiloBitrate(95)->setResize(256, 144);
-$r_240p  = (new Representation)->setKiloBitrate(150)->setResize(426, 240);
-$r_360p  = (new Representation)->setKiloBitrate(276)->setResize(640, 360);
-$r_480p  = (new Representation)->setKiloBitrate(750)->setResize(854, 480);
-$r_720p  = (new Representation)->setKiloBitrate(2048)->setResize(1280, 720);
-$r_1080p = (new Representation)->setKiloBitrate(4096)->setResize(1920, 1080);
-$fconfig = [
-    'ffmpeg.binaries'  => '/usr/bin/ffmpeg',
-    'ffprobe.binaries' => '/usr/bin/ffprobe',
-    'timeout'          => 3600, // The timeout for the underlying process
-    'ffmpeg.threads'   => 2,   // The number of threads that FFmpeg should use
-];
-
-$log = new Logger('FFmpeg_Streaming');
-//$log->pushHandler(new StreamHandler('/var/log/ffmpeg-streaming.log')); // path to log file
-
-$ffmpeg = Streaming\FFMpeg::create($fconfig);
-$video = $ffmpeg->openFromCloud($from_s3);
-$video->dash()
-    ->setAdaption('id=0,streams=v id=1,streams=a') // Set the adaption.
-    ->x264() // Format of the video. Alternatives: x264() and vp9()
-    ->addRepresentations([$r_144p, $r_240p, $r_360p, $r_480p, $r_720p, $r_1080p])
-    ->save(null, $to_s3); // It can be passed a path to the method or it can be null
-    return response()->json($video->metadata());
+//   $config = [
+//     'version'     => 'latest',
+//     'region'      => env('AWS_DEFAULT_REGION'), // the region of your cloud server
+//     'credentials' => [
+//         'key'    => env('AWS_ACCESS_KEY_ID'), // the key to authorize you on the server
+//         'secret' => env('AWS_SECRET_ACCESS_KEY'), // the secret to access to the cloud
+//     ]
+// ];
+// $s3 = new Streaming\Clouds\S3($config);
+//
+// $from_s3 = [
+//     'cloud' => $s3,
+//     'options' => [
+//         'Bucket' => $bucket, // name of your bucket
+//         'Key' => $path // your file name on the cloud
+//     ]
+// ];
+//
+// $to_s3 = [
+//     'cloud' => $s3,
+//     'options' => [
+//         'dest' => `s3://{$bucket}/dash/`, // name of your bucket and path to content folder
+//         'filename' => `{$file->size}.m3u8` // name of your file on the cloud
+//     ]
+// ];
+// $r_144p  = (new Representation)->setKiloBitrate(95)->setResize(256, 144);
+// $r_240p  = (new Representation)->setKiloBitrate(150)->setResize(426, 240);
+// $r_360p  = (new Representation)->setKiloBitrate(276)->setResize(640, 360);
+// $r_480p  = (new Representation)->setKiloBitrate(750)->setResize(854, 480);
+// $r_720p  = (new Representation)->setKiloBitrate(2048)->setResize(1280, 720);
+// $r_1080p = (new Representation)->setKiloBitrate(4096)->setResize(1920, 1080);
+// $fconfig = [
+//     'ffmpeg.binaries'  => '/usr/bin/ffmpeg',
+//     'ffprobe.binaries' => '/usr/bin/ffprobe',
+//     'timeout'          => 3600, // The timeout for the underlying process
+//     'ffmpeg.threads'   => 2,   // The number of threads that FFmpeg should use
+// ];
+//
+// $log = new Logger('FFmpeg_Streaming');
+// //$log->pushHandler(new StreamHandler('/var/log/ffmpeg-streaming.log')); // path to log file
+//
+// $ffmpeg = Streaming\FFMpeg::create($fconfig);
+// $video = $ffmpeg->openFromCloud($from_s3);
+// $video->dash()
+//     ->setAdaption('id=0,streams=v id=1,streams=a') // Set the adaption.
+//     ->x264() // Format of the video. Alternatives: x264() and vp9()
+//     ->addRepresentations([$r_144p, $r_240p, $r_360p, $r_480p, $r_720p, $r_1080p])
+//     ->save(null, $to_s3); // It can be passed a path to the method or it can be null
+//     return response()->json($video->metadata());
+return response()->json($file);
 });
 
 Route::get('/video/{file}', function (File $file) {
