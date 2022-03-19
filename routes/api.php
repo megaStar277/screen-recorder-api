@@ -7,6 +7,7 @@ use App\Notifications\SendFile;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Streaming\Representation;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -70,7 +71,14 @@ $to_s3 = [
         'filename' => `{$file->size}.m3u8` // name of your file on the cloud
     ]
 ];
-
+$r_144p  = (new Representation)->setKiloBitrate(95)->setResize(256, 144);
+$r_240p  = (new Representation)->setKiloBitrate(150)->setResize(426, 240);
+$r_360p  = (new Representation)->setKiloBitrate(276)->setResize(640, 360);
+$r_480p  = (new Representation)->setKiloBitrate(750)->setResize(854, 480);
+$r_720p  = (new Representation)->setKiloBitrate(2048)->setResize(1280, 720);
+$r_1080p = (new Representation)->setKiloBitrate(4096)->setResize(1920, 1080);
+$r_2k    = (new Representation)->setKiloBitrate(6144)->setResize(2560, 1440);
+$r_4k    = (new Representation)->setKiloBitrate(17408)->setResize(3840, 2160);
 $ffmpeg = Streaming\FFMpeg::create([
   'ffmpeg.binaries' => '/usr/bin/ffmpeg',
 'ffprobe.binaries' => '/usr/bin/ffprobe'
@@ -79,7 +87,7 @@ $video = $ffmpeg->openFromCloud($from_s3);
 $video->dash()
     ->setAdaption('id=0,streams=v id=1,streams=a') // Set the adaption.
     ->x264() // Format of the video. Alternatives: x264() and vp9()
-    ->autoGenerateRepresentations() // Auto generate representations
+    ->addRepresentations([$r_144p, $r_240p, $r_360p, $r_480p, $r_720p, $r_1080p, $r_2k, $r_4k])
     ->save(null, $to_s3); // It can be passed a path to the method or it can be null
     return response()->json($video->metadata());
 });
