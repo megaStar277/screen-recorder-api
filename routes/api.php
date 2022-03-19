@@ -89,7 +89,7 @@ $fconfig = [
 $log = new Logger('FFmpeg_Streaming');
 $log->pushHandler(new StreamHandler('/var/log/ffmpeg-streaming.log')); // path to log file
 
-$ffmpeg = FFMpeg::create($fconfig, $log);
+$ffmpeg = Streaming\FFMpeg::create($fconfig, $log);
 $video = $ffmpeg->openFromCloud($from_s3);
 $video->dash()
     ->setAdaption('id=0,streams=v id=1,streams=a') // Set the adaption.
