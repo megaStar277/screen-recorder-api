@@ -72,3 +72,48 @@ Route::get('/callback/youtube', function (Request $request) {
   $user = Socialite::driver('youtube')->stateless()->user();
   return redirect(env('RECORDER_URL').'/#/success?token='.$user->token);
 });
+
+Route::post('/get-dash', function (Request $request) {
+  $uploadedFile = $request->video;
+  $path = Storage::putFile('videos', $uploadedFile);
+  $file = File::Create([
+    'name' => $uploadedFile->getClientOriginalName(),
+    'mime_type' => $uploadedFile->getClientMimeType(),
+    'size' => $uploadedFile->getSize(),
+    'path' => Storage::url($path)
+  ]);
+  $config = [
+    'version'     => 'latest',
+    'region'      => env('AWS_DEFAULT_REGION'), // the region of your cloud server
+    'credentials' => [
+        'key'    => env('AWS_ACCESS_KEY_ID'), // the key to authorize you on the server
+        'secret' => env('AWS_SECRET_ACCESS_KEY'), // the secret to access to the cloud
+    ]
+];
+$s3 = new Streaming\Clouds\S3($config);
+
+$from_s3 = [
+    'cloud' => $s3,
+    'options' => [
+        'Bucket' => env('AWS_BUCKET'), // name of your bucket
+        'Key' => $file->path // your file name on the cloud
+    ]
+];
+
+$to_s3 = [
+    'cloud' => $s3,
+    'options' => [
+        'dest' => `s3://{$ env('AWS_BUCKET')}/dash/`, // name of your bucket and path to content folder
+        'filename' => `{$file->size}.m3u8` // name of your file on the cloud
+    ]
+];
+
+$ffmpeg = Streaming\FFMpeg::create();
+$video = $ffmpeg->openFromCloud($from_s3);
+$video->dash()
+    ->setAdaption('id=0,streams=v id=1,streams=a') // Set the adaption.
+    ->vp9() // Format of the video. Alternatives: x264() and vp9()
+    ->autoGenerateRepresentations() // Auto generate representations
+    ->save(null, $to_s3); // It can be passed a path to the method or it can be null
+    return response()->json($video->metadata());
+});
