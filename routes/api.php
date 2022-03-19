@@ -59,7 +59,7 @@ $from_s3 = [
     'cloud' => $s3,
     'options' => [
         'Bucket' => $bucket, // name of your bucket
-        'Key' => $file->path // your file name on the cloud
+        'Key' => $path // your file name on the cloud
     ]
 ];
 
