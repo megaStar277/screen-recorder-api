@@ -76,6 +76,7 @@ Route::get('/callback/youtube', function (Request $request) {
 Route::post('/get-dash', function (Request $request) {
   $uploadedFile = $request->video;
   $path = Storage::putFile('videos', $uploadedFile);
+  $bucket = env('AWS_BUCKET');
   $file = File::Create([
     'name' => $uploadedFile->getClientOriginalName(),
     'mime_type' => $uploadedFile->getClientMimeType(),
@@ -95,7 +96,7 @@ $s3 = new Streaming\Clouds\S3($config);
 $from_s3 = [
     'cloud' => $s3,
     'options' => [
-        'Bucket' => env('AWS_BUCKET'), // name of your bucket
+        'Bucket' => $bucket, // name of your bucket
         'Key' => $file->path // your file name on the cloud
     ]
 ];
@@ -103,7 +104,7 @@ $from_s3 = [
 $to_s3 = [
     'cloud' => $s3,
     'options' => [
-        'dest' => `s3://{$ env('AWS_BUCKET')}/dash/`, // name of your bucket and path to content folder
+        'dest' => `s3://{$bucket}/dash/`, // name of your bucket and path to content folder
         'filename' => `{$file->size}.m3u8` // name of your file on the cloud
     ]
 ];
