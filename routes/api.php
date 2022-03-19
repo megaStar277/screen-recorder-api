@@ -71,7 +71,10 @@ $to_s3 = [
     ]
 ];
 
-$ffmpeg = Streaming\FFMpeg::create();
+$ffmpeg = Streaming\FFMpeg::create([
+  'ffmpeg.binaries' => '/usr/bin/ffmpeg',
+'ffprobe.binaries' => '/usr/bin/ffprobe'
+]);
 $video = $ffmpeg->openFromCloud($from_s3);
 $video->dash()
     ->setAdaption('id=0,streams=v id=1,streams=a') // Set the adaption.
