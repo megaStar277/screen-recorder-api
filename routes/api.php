@@ -8,6 +8,8 @@ use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Streaming\Representation;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -77,10 +79,17 @@ $r_360p  = (new Representation)->setKiloBitrate(276)->setResize(640, 360);
 $r_480p  = (new Representation)->setKiloBitrate(750)->setResize(854, 480);
 $r_720p  = (new Representation)->setKiloBitrate(2048)->setResize(1280, 720);
 $r_1080p = (new Representation)->setKiloBitrate(4096)->setResize(1920, 1080);
-$ffmpeg = Streaming\FFMpeg::create([
-  'ffmpeg.binaries' => '/usr/bin/ffmpeg',
-'ffprobe.binaries' => '/usr/bin/ffprobe'
-]);
+$fconfig = [
+    'ffmpeg.binaries'  => '/usr/bin/ffmpeg',
+    'ffprobe.binaries' => '/usr/bin/ffprobe',
+    'timeout'          => 3600, // The timeout for the underlying process
+    'ffmpeg.threads'   => 2,   // The number of threads that FFmpeg should use
+];
+
+$log = new Logger('FFmpeg_Streaming');
+$log->pushHandler(new StreamHandler('/var/log/ffmpeg-streaming.log')); // path to log file
+
+$ffmpeg = FFMpeg::create($fconfig, $log);
 $video = $ffmpeg->openFromCloud($from_s3);
 $video->dash()
     ->setAdaption('id=0,streams=v id=1,streams=a') // Set the adaption.
