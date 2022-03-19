@@ -78,7 +78,7 @@ $ffmpeg = Streaming\FFMpeg::create([
 $video = $ffmpeg->openFromCloud($from_s3);
 $video->dash()
     ->setAdaption('id=0,streams=v id=1,streams=a') // Set the adaption.
-    ->vp9() // Format of the video. Alternatives: x264() and vp9()
+    ->x264() // Format of the video. Alternatives: x264() and vp9()
     ->autoGenerateRepresentations() // Auto generate representations
     ->save(null, $to_s3); // It can be passed a path to the method or it can be null
     return response()->json($video->metadata());
